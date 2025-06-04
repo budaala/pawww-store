@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* 
+turkus - 1d9994
+brąz - 3b1f07
+pomarańcz - df552b
+żółty - fabe00
+*/

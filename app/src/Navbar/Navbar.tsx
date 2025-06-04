@@ -10,7 +10,7 @@ import Stack from "@mui/material/Stack";
 export default function PrimarySearchAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: "#f6f6f6" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#f6f6f6" }}>
         <Toolbar>
           <Link to="/">
             <Stack direction="row" spacing={1} alignItems="center">
@@ -41,7 +41,7 @@ export default function PrimarySearchAppBar() {
           <Box sx={{ flexGrow: 1 }} />
           <Link to="/cart">
             <IconButton size="large" edge="end">
-                <ShoppingCartIcon sx={{ color: "#303030" }} />
+              <ShoppingCartIcon sx={{ color: "#303030" }} />
             </IconButton>
           </Link>
         </Toolbar>
