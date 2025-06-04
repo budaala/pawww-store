@@ -21,7 +21,7 @@ Pawww Store is a full-stack web application for selling pet accessories, built w
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/pawww-store.git
+git clone https://github.com/budaala/pawww-store.git
 cd pawww-store
 ```
 
