@@ -1,6 +1,7 @@
 import express from "express"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
+import cors from "cors"
 import productRoute from "./routes/productRoute.js"
 import orderRoute from "./routes/orderRoute.js"
 import path from "path"
@@ -9,6 +10,7 @@ import { fileURLToPath } from "url"
 const app = express();
 
 dotenv.config();
+app.use(cors());
 app.use(express.json());
 const PORT = process.env.PORT || 500;
 const MONGOURL = process.env.MONGO_URL;
