@@ -8,10 +8,12 @@ Pawww Store is a full-stack web application for selling pet accessories, built w
 - ✅ Order submission with stock auto-update
 - 🧾 RESTful API powered by Express & MongoDB
 - 📦 Simple JSON-based order input (no frontend required initially)
+- 🧩 Full React frontend with MUI Design
+- 🛒 LocalStorage-based shopping cart
 
 ## 🔧 Tech Stack
 
-- **Frontend**: React (coming soon)
+- **Frontend**: React, MUI
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB + Mongoose
 - **Environment Management**: dotenv
@@ -93,8 +95,6 @@ pawww-store/
 
 
 ## 💡 Future Ideas
-	•	🧩 Full React frontend with Tailwind
-	•	🛒 LocalStorage-based shopping cart
 	•	🔐 User authentication (JWT)
 	•	✉️ Email notifications on order confirmation
 	•	📊 Admin dashboard for product/order management
