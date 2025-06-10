@@ -15,11 +15,12 @@ type ItemProps = {
   name: string;
   price: number;
   image: string;
+  stock: number;
   _id: string;
 };
 
-const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id }) => {
-  const [count, setCount] = useState(1);
+const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id, stock }) => {
+  const [desiredQuantity, setDesiredQuantity] = useState(stock > 0 ? 1 : 0);
 
   const addToCart = () => {
     const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -27,27 +28,51 @@ const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id }) => {
       (item: any) => item._id === _id
     );
     if (existingItemIndex !== -1) {
-      currentCart[existingItemIndex].quantity += count;
+      let item = currentCart[existingItemIndex];
+      if (item.quantity + desiredQuantity > stock) {
+        alert("Brak dostępności podanej liczby produktów! ❌");
+        return;
+      }
+      item.quantity += desiredQuantity;
     } else {
       currentCart.push({
         _id,
         name,
         price,
         image,
-        quantity: count,
+        stock,
+        quantity: desiredQuantity,
       });
     }
     localStorage.setItem("cart", JSON.stringify(currentCart));
     alert("Dodano do koszyka ✅");
   };
 
+  const increaseQuantity = () => {
+    let newdesiredQuantity = desiredQuantity + 1;
+    setDesiredQuantity(newdesiredQuantity);
+  };
+
+  const decreaseQuantity = () => {
+    let newdesiredQuantity = desiredQuantity - 1;
+    setDesiredQuantity(newdesiredQuantity);
+  };
+
   return (
     <Card sx={{ width: 270 }}>
-      <CardMedia
-        sx={{ height: 250 }}
-        image={`http://localhost:8000${image}`}
-        title={name}
-      />
+      {stock === 0 ? (
+        <CardMedia
+          sx={{ height: 250, filter: "brightness(35%)" }}
+          image={`http://localhost:8000${image}`}
+          title={name}
+        />
+      ) : (
+        <CardMedia
+          sx={{ height: 250 }}
+          image={`http://localhost:8000${image}`}
+          title={name}
+        />
+      )}
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {name}
@@ -70,31 +95,67 @@ const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id }) => {
             justifyContent: "flex-start",
           }}
         >
-          <IconButton size="small">
-            <RemoveIcon
-              fontSize="small"
-              sx={{ color: "#1d9994" }}
-              onClick={() => setCount((count) => count - 1)}
-            />
-          </IconButton>
-          <Typography variant="body2" sx={{ mx: 2 }}>
-            {count}
-          </Typography>
-          <IconButton
-            size="small"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            <AddIcon fontSize="small" sx={{ color: "#1d9994" }} />
-          </IconButton>
+          {stock === 0 ? (
+            <></>
+          ) : (
+            <>
+              {desiredQuantity <= 1 ? (
+                <IconButton disabled sx={{ minWidth: 0 }}>
+                  <RemoveIcon />
+                </IconButton>
+              ) : (
+                <IconButton sx={{ minWidth: 0 }}>
+                  <RemoveIcon
+                    sx={{ color: "#1d9994" }}
+                    onClick={decreaseQuantity}
+                  />
+                </IconButton>
+              )}
+            </>
+          )}
+          {stock === 0 ? (
+            <></>
+          ) : (
+            <Typography variant="body2" sx={{ mx: 2 }}>
+              {desiredQuantity}
+            </Typography>
+          )}
+          {stock === 0 ? (
+            <></>
+          ) : (
+            <>
+              {stock <= desiredQuantity ? (
+                <IconButton disabled sx={{ minWidth: 0 }}>
+                  <AddIcon />
+                </IconButton>
+              ) : (
+                <IconButton sx={{ minWidth: 0 }}>
+                  <AddIcon
+                    sx={{ color: "#1d9994" }}
+                    onClick={increaseQuantity}
+                  />
+                </IconButton>
+              )}
+            </>
+          )}
         </Box>
-        <Button
-          size="small"
-          onClick={addToCart}
-          startIcon={<AddShoppingCartIcon />}
-          sx={{ color: "#1d9994" }}
-        >
-          Dodaj
-        </Button>
+        {stock !== 0 ? (
+          <Button
+            size="small"
+            onClick={addToCart}
+            startIcon={<AddShoppingCartIcon />}
+            sx={{ color: "#1d9994" }}
+          >
+            Dodaj
+          </Button>
+        ) : (
+          <Typography
+            variant="button"
+            sx={{ color: "#df552b", fontWeight: 700 }}
+          >
+            wyprzedane
+          </Typography>
+        )}
       </CardActions>
     </Card>
   );

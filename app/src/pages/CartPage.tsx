@@ -23,6 +23,7 @@ type CartItem = {
   price: number;
   image: string;
   quantity: number;
+  stock: number;
 };
 
 const CartPage = () => {
@@ -106,9 +107,12 @@ const CartPage = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Produkt</TableCell>
-                    <TableCell align="right">Ilość</TableCell>
+                    <TableCell align="right" sx={{ pr: 4 }}>
+                      Ilość
+                    </TableCell>
                     <TableCell align="right">Cena za szt.</TableCell>
                     <TableCell align="right">Łącznie</TableCell>
+                    <TableCell align="right"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -124,15 +128,15 @@ const CartPage = () => {
                             {item.name}
                           </Box>
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="right" sx={{ pr: 0 }}>
                           <Box
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              justifyContent: "flex-end",
+                              justifyContent: "end",
                             }}
                           >
-                            {item.quantity === 1 ? (
+                            {item.quantity <= 1 ? (
                               <IconButton disabled sx={{ minWidth: 0 }}>
                                 <RemoveIcon />
                               </IconButton>
@@ -144,15 +148,21 @@ const CartPage = () => {
                                 />
                               </IconButton>
                             )}
-                            <Typography variant="body2">
+                            <Typography variant="body2" sx={{ mx: 2 }}>
                               {item.quantity}
                             </Typography>
-                            <IconButton
-                              sx={{ minWidth: 0 }}
-                              onClick={() => increaseQuantity(item._id)}
-                            >
-                              <AddIcon sx={{ color: "#1d9994" }} />
-                            </IconButton>
+                            {item.stock <= item.quantity ? (
+                              <IconButton disabled sx={{ minWidth: 0 }}>
+                                <AddIcon />
+                              </IconButton>
+                            ) : (
+                              <IconButton sx={{ minWidth: 0 }}>
+                                <AddIcon
+                                  sx={{ color: "#1d9994" }}
+                                  onClick={() => increaseQuantity(item._id)}
+                                />
+                              </IconButton>
+                            )}
                           </Box>
                         </TableCell>
                         <TableCell align="right">
@@ -161,7 +171,7 @@ const CartPage = () => {
                         <TableCell align="right">
                           {(item.price * item.quantity).toFixed(2)} zł
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="right" sx={{ p: 0 }}>
                           <IconButton
                             onClick={() => clear(item._id)}
                             sx={{ color: "#df552b" }}
@@ -182,7 +192,13 @@ const CartPage = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Box display="flex" justifyContent="space-between">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: { xs: "center", sm: "space-between" },
+                flexDirection: { xs: "column", sm: "row" },
+              }}
+            >
               <Box>
                 <Link to="/">
                   <Button
@@ -208,50 +224,42 @@ const CartPage = () => {
             </Box>
           </Box>
         ) : (
-          <Box
-            p={3}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <img src="src/assets/logo.png" className="h-50 w-50" />
-            <Typography
-              variant="body1"
+          <Box sx={{ display: "flex", justifyContent: "center", my: 5 }}>
+            <Paper
               sx={{
-                textTransform: "none",
                 display: "flex",
-                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
+                maxWidth: 550,
+                px: 6,
+                py: 4,
+                border: "2px solid #1d9994",
               }}
-              gutterBottom
             >
-              Jakoś tu pusto...
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                textTransform: "none",
-                display: "flex",
-                justifyContent: "center",
-              }}
-              gutterBottom
-            >
-              Idź coś kup :)
-            </Typography>
-            <Box display="flex" justifyContent="center">
-              <Link to="/">
-                <Button
-                  size="large"
-                  variant="contained"
-                  sx={{ backgroundColor: "#1d9994", my: 2 }}
-                >
-                  Powrót do strony głównej
-                </Button>
-              </Link>
-            </Box>
+              <img
+                src="src/assets/emptyCart.png"
+                alt="error"
+                loading="lazy"
+                className="w-50 h-50"
+              />
+              <Typography variant="h3" sx={{ textAlign: "center" }}>
+                Ale tu pusto!
+              </Typography>
+              <Typography variant="body1" sx={{ textAlign: "center", mx: 2 }}>
+                Idź sobie coś kup :).
+              </Typography>
+              <Box display="flex" justifyContent="center">
+                <Link to="/">
+                  <Button
+                    size="large"
+                    variant="contained"
+                    sx={{ backgroundColor: "#1d9994", my: 2 }}
+                  >
+                    Powrót do strony głównej
+                  </Button>
+                </Link>
+              </Box>
+            </Paper>
           </Box>
         )}
       </Box>
