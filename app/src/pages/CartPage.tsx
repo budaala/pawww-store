@@ -237,7 +237,7 @@ const CartPage = () => {
               }}
             >
               <img
-                src="src/assets/emptyCart.png"
+                src="/src/assets/emptyCart.png"
                 alt="error"
                 loading="lazy"
                 className="w-50 h-50"

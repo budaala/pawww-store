@@ -16,7 +16,7 @@ export default function OrderConfirmation() {
           alignItems: "center",
         }}
       >
-        <img src="src/assets/logo.png" className="h-50 w-50" />
+        <img src="/src/assets/logo.png" className="h-50 w-50" />
         <Typography
           variant="h2"
           sx={{

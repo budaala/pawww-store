@@ -20,7 +20,7 @@ export default function PrimarySearchAppBar() {
                 component="div"
                 sx={{ display: { xs: "none", sm: "block" } }}
               >
-                <img src="src/assets/logo.png" className="h-10 w-10"></img>
+                <img src="/src/assets/logo.png" className="h-10 w-10"></img>
               </Typography>
               <Typography
                 variant="h6"

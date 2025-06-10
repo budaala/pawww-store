@@ -79,7 +79,7 @@ export default function BasicMasonry() {
             }}
           >
             <img
-              src="src/assets/error.png"
+              src="/src/assets/error.png"
               alt="error"
               loading="lazy"
               className="w-50 h-50"

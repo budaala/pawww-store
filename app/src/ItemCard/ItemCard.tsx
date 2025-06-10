@@ -10,6 +10,8 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
+import { CardActionArea } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 type ItemProps = {
   name: string;
@@ -59,105 +61,123 @@ const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id, stock }) => {
   };
 
   return (
-    <Card sx={{ width: 270 }}>
-      {stock === 0 ? (
-        <CardMedia
-          sx={{ height: 250, filter: "brightness(35%)" }}
-          image={`http://localhost:8000${image}`}
-          title={name}
-        />
-      ) : (
-        <CardMedia
-          sx={{ height: 250 }}
-          image={`http://localhost:8000${image}`}
-          title={name}
-        />
-      )}
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {name}
-        </Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {price.toFixed(2)} zł
-        </Typography>
-      </CardContent>
-      <CardActions
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box
+    <>
+      <Card sx={{ width: 270 }}>
+        <CardActionArea
+          component={RouterLink}
+          to={`/products/${_id}`}
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
+            textDecoration: "none",
           }}
         >
           {stock === 0 ? (
-            <></>
+            <CardMedia
+              sx={{ height: 250, filter: "brightness(35%)" }}
+              image={`http://localhost:8000${image}`}
+              title={name}
+            />
           ) : (
-            <>
-              {desiredQuantity <= 1 ? (
-                <IconButton disabled sx={{ minWidth: 0 }}>
-                  <RemoveIcon />
-                </IconButton>
-              ) : (
-                <IconButton sx={{ minWidth: 0 }}>
-                  <RemoveIcon
-                    sx={{ color: "#1d9994" }}
-                    onClick={decreaseQuantity}
-                  />
-                </IconButton>
-              )}
-            </>
+            <CardMedia
+              sx={{ height: 250 }}
+              image={`http://localhost:8000${image}`}
+              title={name}
+            />
           )}
-          {stock === 0 ? (
-            <></>
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              sx={{
+                color: "#000000",
+              }}
+            >
+              {name}
+            </Typography>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              {price.toFixed(2)} zł
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+
+        <CardActions
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-start",
+            }}
+          >
+            {stock === 0 ? (
+              <></>
+            ) : (
+              <>
+                {desiredQuantity <= 1 ? (
+                  <IconButton disabled sx={{ minWidth: 0 }}>
+                    <RemoveIcon />
+                  </IconButton>
+                ) : (
+                  <IconButton sx={{ minWidth: 0 }}>
+                    <RemoveIcon
+                      sx={{ color: "#1d9994" }}
+                      onClick={decreaseQuantity}
+                    />
+                  </IconButton>
+                )}
+              </>
+            )}
+            {stock === 0 ? (
+              <></>
+            ) : (
+              <Typography variant="body2" sx={{ mx: 2 }}>
+                {desiredQuantity}
+              </Typography>
+            )}
+            {stock === 0 ? (
+              <></>
+            ) : (
+              <>
+                {stock <= desiredQuantity ? (
+                  <IconButton disabled sx={{ minWidth: 0 }}>
+                    <AddIcon />
+                  </IconButton>
+                ) : (
+                  <IconButton sx={{ minWidth: 0 }}>
+                    <AddIcon
+                      sx={{ color: "#1d9994" }}
+                      onClick={increaseQuantity}
+                    />
+                  </IconButton>
+                )}
+              </>
+            )}
+          </Box>
+          {stock !== 0 ? (
+            <Button
+              size="small"
+              onClick={addToCart}
+              startIcon={<AddShoppingCartIcon />}
+              sx={{ color: "#1d9994" }}
+            >
+              Dodaj
+            </Button>
           ) : (
-            <Typography variant="body2" sx={{ mx: 2 }}>
-              {desiredQuantity}
+            <Typography
+              variant="button"
+              sx={{ color: "#df552b", fontWeight: 700 }}
+            >
+              wyprzedane
             </Typography>
           )}
-          {stock === 0 ? (
-            <></>
-          ) : (
-            <>
-              {stock <= desiredQuantity ? (
-                <IconButton disabled sx={{ minWidth: 0 }}>
-                  <AddIcon />
-                </IconButton>
-              ) : (
-                <IconButton sx={{ minWidth: 0 }}>
-                  <AddIcon
-                    sx={{ color: "#1d9994" }}
-                    onClick={increaseQuantity}
-                  />
-                </IconButton>
-              )}
-            </>
-          )}
-        </Box>
-        {stock !== 0 ? (
-          <Button
-            size="small"
-            onClick={addToCart}
-            startIcon={<AddShoppingCartIcon />}
-            sx={{ color: "#1d9994" }}
-          >
-            Dodaj
-          </Button>
-        ) : (
-          <Typography
-            variant="button"
-            sx={{ color: "#df552b", fontWeight: 700 }}
-          >
-            wyprzedane
-          </Typography>
-        )}
-      </CardActions>
-    </Card>
+        </CardActions>
+      </Card>
+    </>
   );
 };
 
