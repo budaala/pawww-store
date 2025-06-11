@@ -12,6 +12,8 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { CardActionArea } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import { ButtonGroup } from "@mui/material";
+import { Alert } from "@mui/material";
 
 type ItemProps = {
   name: string;
@@ -22,7 +24,9 @@ type ItemProps = {
 };
 
 const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id, stock }) => {
-  const [desiredQuantity, setDesiredQuantity] = useState(stock > 0 ? 1 : 0);
+  const [desiredQuantity, setDesiredQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [errorAddingToCart, setErrorAddingToCart] = useState(false);
 
   const addToCart = () => {
     const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -32,9 +36,11 @@ const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id, stock }) => {
     if (existingItemIndex !== -1) {
       let item = currentCart[existingItemIndex];
       if (item.quantity + desiredQuantity > stock) {
-        alert("Brak dostępności podanej liczby produktów! ❌");
+        setAddedToCart(false);
+        setErrorAddingToCart(item.quantity);
         return;
       }
+      setErrorAddingToCart(false);
       item.quantity += desiredQuantity;
     } else {
       currentCart.push({
@@ -47,7 +53,7 @@ const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id, stock }) => {
       });
     }
     localStorage.setItem("cart", JSON.stringify(currentCart));
-    alert("Dodano do koszyka ✅");
+    setAddedToCart(true);
   };
 
   const increaseQuantity = () => {
@@ -100,77 +106,99 @@ const ItemCard: React.FC<ItemProps> = ({ name, price, image, _id, stock }) => {
           </CardContent>
         </CardActionArea>
 
-        <CardActions
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          >
-            {stock === 0 ? (
-              <></>
-            ) : (
-              <>
-                {desiredQuantity <= 1 ? (
-                  <IconButton disabled sx={{ minWidth: 0 }}>
-                    <RemoveIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton sx={{ minWidth: 0 }}>
-                    <RemoveIcon
-                      sx={{ color: "#1d9994" }}
-                      onClick={decreaseQuantity}
-                    />
-                  </IconButton>
-                )}
-              </>
-            )}
-            {stock === 0 ? (
-              <></>
-            ) : (
-              <Typography variant="body2" sx={{ mx: 2 }}>
-                {desiredQuantity}
-              </Typography>
-            )}
-            {stock === 0 ? (
-              <></>
-            ) : (
-              <>
-                {stock <= desiredQuantity ? (
-                  <IconButton disabled sx={{ minWidth: 0 }}>
-                    <AddIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton sx={{ minWidth: 0 }}>
-                    <AddIcon
-                      sx={{ color: "#1d9994" }}
-                      onClick={increaseQuantity}
-                    />
-                  </IconButton>
-                )}
-              </>
-            )}
-          </Box>
+        <CardActions>
           {stock !== 0 ? (
-            <Button
-              size="small"
-              onClick={addToCart}
-              startIcon={<AddShoppingCartIcon />}
-              sx={{ color: "#1d9994" }}
-            >
-              Dodaj
-            </Button>
+            <Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  gap: 4,
+                }}
+              >
+                <ButtonGroup
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  {desiredQuantity <= 1 ? (
+                    <IconButton disabled>
+                      <RemoveIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton>
+                      <RemoveIcon
+                        sx={{ color: "#1d9994" }}
+                        onClick={decreaseQuantity}
+                      />
+                    </IconButton>
+                  )}
+
+                  <Typography variant="body2" sx={{ mx: 2 }}>
+                    {desiredQuantity}
+                  </Typography>
+
+                  {stock <= desiredQuantity ? (
+                    <IconButton disabled>
+                      <AddIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton>
+                      <AddIcon
+                        sx={{ color: "#1d9994" }}
+                        onClick={increaseQuantity}
+                      />
+                    </IconButton>
+                  )}
+                </ButtonGroup>
+
+                <Button
+                  fullWidth
+                  size="medium"
+                  onClick={addToCart}
+                  startIcon={<AddShoppingCartIcon />}
+                  sx={{ color: "#1d9994" }}
+                >
+                  Dodaj
+                </Button>
+              </Box>
+              {addedToCart ? (
+                <Alert
+                  severity="success"
+                  onClose={() => {
+                    setAddedToCart(false);
+                  }}
+                >
+                  Dodano do koszyka!
+                </Alert>
+              ) : (
+                <></>
+              )}
+              {errorAddingToCart ? (
+                <Alert
+                  severity="error"
+                  onClose={() => {
+                    setErrorAddingToCart(false);
+                  }}
+                >
+                  Nie można dodać tylu produktów. W Twoim koszyku znajduje się
+                  już {errorAddingToCart} sztuk, a maksymalna dostępna ilość to{" "}
+                  {stock} sztuk.
+                </Alert>
+              ) : (
+                <></>
+              )}
+            </Box>
           ) : (
             <Typography
               variant="button"
-              sx={{ color: "#df552b", fontWeight: 700 }}
+              sx={{
+                color: "#df552b",
+                fontWeight: 700,
+              }}
             >
               wyprzedane
             </Typography>

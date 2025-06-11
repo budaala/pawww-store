@@ -11,6 +11,7 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { ButtonGroup } from "@mui/material";
+import { Alert } from "@mui/material";
 
 type Product = {
   name: string;
@@ -22,6 +23,8 @@ type Product = {
 
 const ProductPage = () => {
   const { productId } = useParams<{ productId: string }>();
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [errorAddingToCart, setErrorAddingToCart] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
@@ -44,9 +47,11 @@ const ProductPage = () => {
     if (existingItemIndex !== -1) {
       let item = currentCart[existingItemIndex];
       if (product && item.quantity + desiredQuantity > product.stock) {
-        alert("Brak dostępności podanej liczby produktów! ❌");
+        setAddedToCart(false);
+        setErrorAddingToCart(item.quantity);
         return;
       }
+      setErrorAddingToCart(false);
       item.quantity += desiredQuantity;
     } else {
       currentCart.push({
@@ -59,7 +64,7 @@ const ProductPage = () => {
       });
     }
     localStorage.setItem("cart", JSON.stringify(currentCart));
-    alert("Dodano do koszyka ✅");
+    setAddedToCart(true);
   };
 
   const increaseQuantity = () => {
@@ -111,7 +116,7 @@ const ProductPage = () => {
           />
           <Box sx={{ maxWidth: 400 }}>
             <Box sx={{ pb: 5 }}>
-              <Typography variant="h2" sx={{ textTransform: "none" }}>
+              <Typography variant="h3" component="h2">
                 {product.name}
               </Typography>
               <Typography variant="body1">
@@ -123,61 +128,78 @@ const ProductPage = () => {
               {product.price.toFixed(2)} zł
             </Typography>
             {product.stock !== 0 ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <ButtonGroup
+              <Box>
+                <Box
                   sx={{
                     display: "flex",
+                    justifyContent: "space-between",
                     alignItems: "center",
-                    justifyContent: "flex-start",
+                    mb: 2,
                   }}
                 >
-                  {desiredQuantity <= 1 ? (
-                    <IconButton disabled>
-                      <RemoveIcon />
-                    </IconButton>
-                  ) : (
-                    <IconButton>
-                      <RemoveIcon
-                        sx={{ color: "#1d9994" }}
-                        onClick={decreaseQuantity}
-                      />
-                    </IconButton>
-                  )}
+                  <ButtonGroup
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    {desiredQuantity <= 1 ? (
+                      <IconButton disabled>
+                        <RemoveIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton>
+                        <RemoveIcon
+                          sx={{ color: "#1d9994" }}
+                          onClick={decreaseQuantity}
+                        />
+                      </IconButton>
+                    )}
 
-                  <Typography variant="body2" sx={{ mx: 2 }}>
-                    {desiredQuantity}
-                  </Typography>
+                    <Typography variant="body2" sx={{ mx: 2 }}>
+                      {desiredQuantity}
+                    </Typography>
 
-                  {product.stock <= desiredQuantity ? (
-                    <IconButton disabled>
-                      <AddIcon />
-                    </IconButton>
-                  ) : (
-                    <IconButton>
-                      <AddIcon
-                        sx={{ color: "#1d9994" }}
-                        onClick={increaseQuantity}
-                      />
-                    </IconButton>
-                  )}
-                </ButtonGroup>
+                    {product.stock <= desiredQuantity ? (
+                      <IconButton disabled>
+                        <AddIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton>
+                        <AddIcon
+                          sx={{ color: "#1d9994" }}
+                          onClick={increaseQuantity}
+                        />
+                      </IconButton>
+                    )}
+                  </ButtonGroup>
 
-                <Button
-                  fullWidth
-                  size="medium"
-                  variant="contained"
-                  onClick={addToCart}
-                  startIcon={<AddShoppingCartIcon />}
-                  sx={{ backgroundColor: "#1d9994" }}
-                >
-                  Dodaj
-                </Button>
+                  <Button
+                    fullWidth
+                    size="medium"
+                    variant="contained"
+                    onClick={addToCart}
+                    startIcon={<AddShoppingCartIcon />}
+                    sx={{ backgroundColor: "#1d9994" }}
+                  >
+                    Dodaj
+                  </Button>
+                </Box>
+                {addedToCart ? (
+                  <Alert severity="success">Dodano do koszyka!</Alert>
+                ) : (
+                  <></>
+                )}
+                {errorAddingToCart ? (
+                  <Alert severity="error">
+                    Nie można dodać tylu produktów. W Twoim koszyku znajduje się
+                    już {errorAddingToCart} sztuk, a maksymalna dostępna ilość
+                    to {product.stock} sztuk.
+                  </Alert>
+                ) : (
+                  <></>
+                )}
               </Box>
             ) : (
               <Typography
