@@ -12,6 +12,7 @@ export default function BasicMasonry() {
     price: number;
     image: string;
     stock: number;
+    category: string;
   };
 
   const [products, setProducts] = useState<Product[]>([]);

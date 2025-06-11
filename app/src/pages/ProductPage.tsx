@@ -12,12 +12,15 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { ButtonGroup } from "@mui/material";
 import { Alert } from "@mui/material";
+import { Chip } from "@mui/material";
 
 type Product = {
   name: string;
   price: number;
   image: string;
   stock: number;
+  category: string;
+  description: string;
   _id: string;
 };
 
@@ -105,23 +108,30 @@ const ProductPage = () => {
             width: "90%",
             maxWidth: 1000,
             display: "flex",
-            flexDirection: "row",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: { xs: "center", sm: "space-evenly" },
+            p: 3,
             gap: 3,
           }}
         >
           <CardMedia
-            sx={{ height: 400, width: 400 }}
+            sx={{ height: { xs: 200, sm: 400 }, width: { xs: 200, sm: 400 } }}
             image={`http://localhost:8000${product.image}`}
             title={product.name}
           />
-          <Box sx={{ maxWidth: 400 }}>
-            <Box sx={{ pb: 5 }}>
+          <Box>
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Chip
+                label={product.category}
+                sx={{ backgroundColor: "#1d9994", color: "#ffffff" }}
+              />
+            </Box>
+            <Box sx={{ pb: 5, pt: 2 }}>
               <Typography variant="h3" component="h2">
                 {product.name}
               </Typography>
-              <Typography variant="body1">
-                Tu się pojawi bardzo długi opis jak nasz produkt jest świetny i
-                tani za to co oferuje
+              <Typography variant="body1" sx={{ pt: 2 }}>
+                {product.description}
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ fontWeight: "bolder", pb: 5 }}>
