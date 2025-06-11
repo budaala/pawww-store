@@ -12,6 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
 
 type CartItem = {
   _id: string;
@@ -50,7 +51,13 @@ export default function Confirmation() {
     ),
   };
 
-  const submitOrder = () => {
+  const submitOrder = async () => {
+    const stripe = await loadStripe(
+      "pk_test_51RYmWKPsgTHLzvmxYZMMoCe87zgn91r5hJyL6WMc8EXPfUewgPw3AuEINJTkPQvjyfZAtekeigqhgHlUp9QfJkHK00HQKb9ixA"
+    );
+
+    console.log(orderPayload);
+
     fetch("http://localhost:8000/api/orders", {
       method: "POST",
       headers: {
@@ -59,6 +66,14 @@ export default function Confirmation() {
       body: JSON.stringify(orderPayload),
     })
       .then((res) => res.json())
+      .then((session) => {
+        return stripe?.redirectToCheckout({ sessionId: session.id });
+      })
+      .then((result) => {
+        if (result?.error) {
+          console.log(result.error);
+        }
+      })
       .then(() => {
         localStorage.removeItem("cart");
         navigate("/order-confirmation");
