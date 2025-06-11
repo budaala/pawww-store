@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema({
     category: {
         type: String,
         enum: ['Pupil', 'Właściciel', 'Inne'],
-        default: ['Inne']
+        default: 'Inne'
     },
     price: {
         type: Number,

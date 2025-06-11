@@ -1,5 +1,13 @@
 import Order from "../model/orderModel.js"
 import Product from "../model/productModel.js"
+import Stripe from "stripe";
+
+import dotenv from "dotenv";
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET, {
+    apiVersion: "2022-11-15",
+});
 
 export const order = async (req, res) => {
     try {
@@ -17,10 +25,8 @@ export const order = async (req, res) => {
             totalPrice
         });
 
-        console.log(newOrder);
-
         await newOrder.save();
-        for (const item of items) {
+        for (const item of newOrder.items) {
             const product = await Product.findById(item.productId);
             if (!product || product.stock < item.quantity) {
                 return res.status(400).json({ error: `Produkt "${item.name}" jest niedostępny w żądanej ilości.` });
@@ -28,10 +34,38 @@ export const order = async (req, res) => {
             product.stock = Math.max(Number(product.stock) - Number(item.quantity), 0);
             await product.save();
         }
-        res.status(201).json({ message: 'Zamówienie przyjęte', orderId: newOrder._id });
+        console.log(newOrder)
+        console.log(newOrder.items)
+        console.log("----")
+        const sessionId = await payment(newOrder.items);
+        res.status(201).json({ message: 'Zamówienie przyjęte', orderId: newOrder._id, id: sessionId });
     }
     catch (error) {
         console.log(error);
         res.status(500).json({ error: "Internal server error." })
     }
+}
+
+const payment = async (products) => {
+
+    const lineItems = products.map((product) => ({
+        price_data: {
+            currency: "pln",
+            product_data: {
+                name: product.name
+            },
+            unit_amount: Math.round(product.price * 100),
+        },
+        quantity: product.quantity,
+    }))
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: lineItems,
+        mode: "payment",
+        success_url: "http://localhost:5173/order-successful",
+        cancel_url: "http://localhost:5173/order-cancelled"
+    })
+
+    return session.id;
 }
