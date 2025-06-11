@@ -10,6 +10,7 @@ Pawww Store is a full-stack web application for selling pet accessories, built w
 - 📦 Simple JSON-based order input (no frontend required initially)
 - 🧩 Full React frontend with MUI Design
 - 🛒 LocalStorage-based shopping cart
+- 💳 Payment gateway using Stripe
 
 ## 🔧 Tech Stack
 
