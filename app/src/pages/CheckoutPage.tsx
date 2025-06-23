@@ -40,7 +40,6 @@ export default function Confirmation() {
 
   const orderPayload = {
     items: cart.map((item: any) => ({
-      productId: item._id,
       name: item.name,
       price: item.price,
       quantity: item.quantity,

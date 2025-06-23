@@ -26,8 +26,10 @@ export const order = async (req, res) => {
         });
 
         await newOrder.save();
+        console.log(newOrder)
         for (const item of newOrder.items) {
-            const product = await Product.findById(item.productId);
+            const product = await Product.findById(item._id);
+            console.log(product)
             if (!product || product.stock < item.quantity) {
                 return res.status(400).json({ error: `Produkt "${item.name}" jest niedostępny w żądanej ilości.` });
             }
@@ -68,4 +70,17 @@ const payment = async (products) => {
     })
 
     return session.id;
+}
+
+export const getOrders = async (req, res) => {
+    try {
+        const orders = await Order.find();
+        if (orders.length === 0) {
+            return res.status(404).json({ message: "Orders not found." })
+        }
+        res.status(200).json(orders);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Internal server error." })
+    }
 }
