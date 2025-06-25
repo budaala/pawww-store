@@ -37,11 +37,11 @@ const userSchema = mongoose.Schema({
         select: false
     },
     forgotPasswordCode: {
-        type: Number,
+        type: String,
         select: false
     },
     forgotPasswordCodeValidation: {
-        type: Number,
+        type: String,
         select: false
     }
 },

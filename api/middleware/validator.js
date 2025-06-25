@@ -10,4 +10,14 @@ const acceptCodeSchema = Joi.object({
     providedCode: Joi.number().required()
 });
 
-export default { signupSchema, acceptCodeSchema };
+const changePasswordSchema = Joi.object({
+    oldPassword: Joi.string().required().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+    newPassword: Joi.string().required().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+});
+
+const acceptForgotPasswordCodeSchema = Joi.object({
+    email: Joi.string().min(6).max(60).required().email(),
+    providedCode: Joi.number().required()
+});
+
+export default { signupSchema, acceptCodeSchema, changePasswordSchema, acceptForgotPasswordCodeSchema };
