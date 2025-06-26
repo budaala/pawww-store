@@ -1,22 +1,24 @@
+
 # 🐾 Pawww Store – Pet Supplies Web App
 
-Pawww Store is a full-stack web application for selling pet accessories, built with the **MERN stack** (MongoDB, Express, React, Node.js). It allows users to browse products, place orders, and manages inventory stock automatically.
+A full-stack **MERN** (MongoDB, Express, React, Node.js) e-commerce web application for pet supplies. Pawww Store allows users to browse products, manage a shopping cart, place orders, and process payments securely via Stripe. The backend exposes a robust RESTful API, while the frontend offers an intuitive and responsive user interface.
 
 ## ✨ Features
 
-- 🛒 Product listing with name, price, image, and stock
-- ✅ Order submission with stock auto-update
-- 🧾 RESTful API powered by Express & MongoDB
-- 📦 Simple JSON-based order input (no frontend required initially)
-- 🧩 Full React frontend with MUI Design
-- 🛒 LocalStorage-based shopping cart
-- 💳 Payment gateway using Stripe
+- 🛍️ **Product Catalog:** Browse a list of pet products with images, prices, and stock status.
+- 🛒 **Shopping Cart:** Add, remove, and update product quantities; cart state is persisted in LocalStorage.
+- ✅ **Order Placement:** Seamlessly place orders; stock levels update automatically.
+- 🔐 **User Authentication:** Register, log in, and manage sessions using JWT.
+- 🧩 **Responsive Design:** Fully responsive UI using React & Material UI (MUI).
+- 💳 **Stripe Payments:** Secure online payments via Stripe integration.
 
 ## 🔧 Tech Stack
 
-- **Frontend**: React, MUI
+- **Frontend**: React, Material UI (MUI)
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB + Mongoose
+- **Authentication:** JWT (JSON Web Tokens)
+- **Payments:** Stripe API
 - **Environment Management**: dotenv
 
 ## 🚀 Getting Started
@@ -39,8 +41,13 @@ npm install
 Create a .env file:
 
 ```bash
-PORT=5000
-MONGO_URL=mongodb://localhost:27017/pawww-store
+PORT  = 8000
+MONGO_URL  = mongodb://localhost:27017/pawww-store
+STRIPE_SECRET  = your_stripe_secret_key
+TOKEN_SECRET  = your_jwt_secret
+NODE_CODE_SENDING_EMAIL_ADDRESS  = your_email_address
+NODE_CODE_SENDING_EMAIL_PASSWORD  = your_email_app_password
+HMAC_VERIFICATION_CODE_SECRET  = your_hmac_secret
 ```
 
 ### 4. Run the backend server
@@ -49,56 +56,35 @@ MONGO_URL=mongodb://localhost:27017/pawww-store
 npm run dev
 ```
 
-The backend runs at: http://localhost:5000
+The backend runs at: http://localhost:8000
 
-## 📬 API Endpoints
+## 📬 API Overview
+### Authentication
+ -	`POST /api/auth/signup` — Register a new user 	
+ -	`POST /api/auth/signin` — Log in and receive a JWT
+ -	`POST /api/auth/signout` — Log out
 
-### 🛍️ GET /api/products
+### Authorization
+ -	`PATCH /api/auth/send-verification-code` — Send account verification code via email
+ -	`PATCH /api/auth/verify-verification-code` — Verify sent code
+ -	 `PATCH /api/auth/change-password` — Change password (logged in user)
+  -	`PATCH /api/auth/send-forgot-password-code` — Send email with code to change forgotten password
+ -	`PATCH /api/auth/verify-forgot-password-code` — Verify sent code to change forgotten password
 
-Returns a list of all products.
+### Products
+ - `GET /api/products` — List all products 
+ - `GET /api/products/:id`  — Get product details 
 
-### 🧾 POST /api/orders
-
-Submits an order and updates product stock. Example payload:
-
-```json
-{
-  "items": [
-    {
-      "productId": "666a1b6f7a1b2c3d4e5f6789",
-      "name": "PawPodusia",
-      "price": 59.90,
-      "quantity": 2
-    }
-  ],
-  "totalPrice": 119.80
-}
-```
-
-## 📁 Project Structure
-
-```bash
-pawww-store/
-├── model/
-│   ├── productModel.js
-│   └── orderModel.js
-├── routes/
-│   ├── productRoute.js
-│   └── orderRoute.js
-├── controllers/
-│   ├── productController.js
-│   └── orderController.js
-├── uploads/
-│   └── (product images)
-├── index.js
-└── .env
-```
-
+### Orders
+ - `POST /api/orders` — Place a new order 
+ - `GET /api/orders` — List of orders 	
 
 ## 💡 Future Ideas
-	•	🔐 User authentication (JWT)
-	•	✉️ Email notifications on order confirmation
-	•	📊 Admin dashboard for product/order management
+
+ - 👩🏼‍💻 User interface for account and order history
+ - ✉️ Email notifications on order confirmation 	
+ - 📊  Admin dashboard for product/order management
+ - ↕️  Sorting & filtering on home page
 
 ## 🐶 Author
 
