@@ -4,6 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import PersonIcon from "@mui/icons-material/Person";
 import { Link } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 
@@ -39,11 +40,18 @@ export default function PrimarySearchAppBar() {
             </Stack>
           </Link>
           <Box sx={{ flexGrow: 1 }} />
-          <Link to="/cart">
-            <IconButton size="large" edge="end">
-              <ShoppingCartIcon sx={{ color: "#303030" }} />
-            </IconButton>
-          </Link>
+          <Box>
+            <Link to="/myaccount">
+              <IconButton size="large">
+                <PersonIcon sx={{ color: "#303030" }} />
+              </IconButton>
+            </Link>
+            <Link to="/cart">
+              <IconButton size="large" edge="end">
+                <ShoppingCartIcon sx={{ color: "#303030" }} />
+              </IconButton>
+            </Link>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>
